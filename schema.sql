@@ -5,12 +5,12 @@ CREATE TABLE member (
 	name TEXT,
 	phone TEXT NOT NULL,
 	email TEXT UNIQUE
-)
+);
 
 CREATE TABLE category (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	category_name TEXT NOT NULL UNIQUE
-)
+);
 
 CREATE TABLE book (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +19,7 @@ CREATE TABLE book (
 	published_date DATE,
 	category_id INTEGER NOT NULL,
 	FOREIGN KEY (category_id) REFERENCES category(id)
-)
+);
 
 CREATE TABLE rental (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,4 +29,4 @@ CREATE TABLE rental (
 	return_date DATE,
     FOREIGN KEY (member_id) REFERENCES member(id),
 	FOREIGN KEY (book_id) REFERENCES book(id)
-)
+);
