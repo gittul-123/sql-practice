@@ -1,3 +1,48 @@
+﻿-- category 샘플 데이터 (KDC 10개 대분류)
+INSERT INTO category (category_name) VALUES
+    ('총류'),
+    ('철학'),
+    ('종교'),
+    ('사회과학'),
+    ('순수과학'),
+    ('기술과학'),
+    ('예술'),
+    ('언어'),
+    ('문학'),
+    ('역사');
+
+-- member 샘플 데이터
+INSERT INTO member (name, phone, email) VALUES
+    ('김민준', '010-1234-5678', 'minjun.kim@example.com'),
+    ('이서연', '010-9876-5432', 'seoyeon.lee@example.com'),
+    ('박하준', '010-2345-6789', 'hajun.park@example.com'),
+    ('최지우', '010-8765-4321', 'jiwoo.choi@example.com'),
+    ('정예나', '010-3456-7890', 'yena.jung@example.com'),
+    ('강도윤', '010-7654-3210', 'doyun.kang@example.com'),
+    ('윤서아', '010-4567-8901', 'seoa.yoon@example.com'),
+    ('장예준', '010-6543-2109', 'yejun.jang@example.com'),
+    ('임하윤', '010-5678-9012', 'hayun.im@example.com'),
+    ('한지호', '010-5432-1098', 'jiho.han@example.com'),
+    ('오서율', '010-6789-0123', 'seoyul.oh@example.com'),
+    ('김민준', '010-4321-0987', 'minha.song@example.com');
+
+-- book 샘플 데이터 (category_id: 1~10)
+INSERT INTO book (title, author, published_date, category_id) VALUES
+    ('시간의 조각들', '엘리아스 폰 브라운', '2017-08-14', 9),
+    ('존재의 나침반', '루카스 셰퍼', '2011-03-29', 2),
+    ('영혼의 노래', '아리아나 킴', '2020-11-05', 3),
+    ('도시의 맥박', '카이 루이스', '2015-01-10', 4),
+    ('우주의 속삭임', '마일로 켄싱턴', '2018-06-22', 5),
+    ('미래의 설계도', '이솔비', '2012-12-01', 6),
+    ('색채의 연대기', '소피아 로렌치', '2021-07-07', 7),
+    ('단어의 마법', '클레오파트라 베일', '2019-02-18', 8),
+    ('이야기 강', '강하준', '2014-09-30', 9),
+    ('과거의 그림자', '데이빗 첸', '2016-05-03', 10),
+    ('새로운 지평선', '박서연', '2023-01-20', 9),
+    ('생각의 정원', '최지훈', '2013-10-11', 2);
+
+-- rental 샘플 데이터 (member_id: 1~12, book_id: 1~12)
+-- return_date가 NULL이면 아직 반납하지 않은 대여 중인 기록
 INSERT INTO rental (member_id, book_id, rental_date, return_date) VALUES
     (1, 1,  '2026-08-03', '2026-08-17'),
     (1, 3,  '2026-09-01', '2026-09-14'),
