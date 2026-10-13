@@ -43,3 +43,16 @@ SELECT category.category_name, COUNT(book.id)
 FROM category
 LEFT JOIN book ON book.category_id = category.id
 GROUP BY category.category_name;
+
+
+-- 11. 회원별 대여 횟수 집계, 대여 기록이 없는 회원은 0회로 표시 (LEFT JOIN, GROUP BY, COUNT)
+SELECT member.id,member.name, COUNT(rental.id) 
+FROM member
+LEFT JOIN rental ON member.id = rental.member_id
+GROUP BY member.id;
+
+-- 12. 회원별 평균 대여 일수 조회, 반납하지 않은 건은 평균에서 제외 (GROUP BY, AVG)
+-- SQLite 전용 문법: julianday()
+SELECT member_id, AVG(julianday(return_date) - julianday(rental_date)) AS avg_days
+FROM rental
+GROUP BY member_id;
