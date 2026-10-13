@@ -91,3 +91,9 @@ DELETE FROM member WHERE id = 11;
 CREATE INDEX idx_rental_member_id ON rental(member_id);
 
 
+-- 17. 회원별 총 대여 일수 조회, 반납하지 않은 건은 합계에서 제외 (GROUP BY, SUM)
+-- SQLite 전용 문법: julianday()
+SELECT member_id, SUM(julianday(return_date) - julianday(rental_date)) AS total_days
+FROM rental
+WHERE return_date IS NOT NULL
+GROUP BY member_id;
