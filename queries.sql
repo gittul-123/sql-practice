@@ -56,3 +56,20 @@ GROUP BY member.id;
 SELECT member_id, AVG(julianday(return_date) - julianday(rental_date)) AS avg_days
 FROM rental
 GROUP BY member_id;
+
+-- 13. 대여 기록이 한 번도 없는 회원 조회 (서브쿼리, NOT IN)
+SELECT member.name
+FROM member
+WHERE id NOT IN (SELECT member_id FROM rental);
+
+--- 8번 방식(LEFT JOIN+IS NULL)과 13번 방식(서브쿼리+NOT IN)의 비교
+                8번 (LEFT JOIN + IS NULL)	13번 (서브쿼리 + NOT IN)
+읽는 느낌	     이어 붙인 다음 NULL을 골라냄	 "빌린 적 있는 번호 목록에 없는 회원"
+이해 쉬움	     처음엔 어려움	                말로 읽으면 직관적
+데이터가 많을 때  보통 빠름                     DB에 따라 느릴 수 있음
+비고                                         NOT IN은 NULL이 하나라도 포함되면 결과가 비어버림(주의 필요)
+
+-- 14. 정예나(5번)가 '이야기 강'(9번)을 반납한 것으로 반납일 갱신 (UPDATE)
+UPDATE rental
+SET return_date = '2026-10-13'
+WHERE member_id = 5 AND book_id = 9;
