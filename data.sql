@@ -1,4 +1,6 @@
-﻿-- category 샘플 데이터 (KDC 10개 대분류)
+﻿PRAGMA foreign_keys = ON;
+
+-- category 샘플 데이터 (KDC 10개 대분류)
 INSERT INTO category (category_name) VALUES
     ('총류'),
     ('철학'),

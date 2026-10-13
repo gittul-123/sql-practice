@@ -1,4 +1,5 @@
-﻿-- DB: SQLite / SQLite 전용 문법: AUTOINCREMENT
+﻿-- DB: SQLite / SQLite 전용 문법: AUTOINCREMENT, PRAGMA
+PRAGMA foreign_keys = ON;
 
 CREATE TABLE member (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,

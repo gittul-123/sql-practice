@@ -1,4 +1,7 @@
-﻿-- 1. 이름이 김민준인 회원 조회 (WHERE)
+﻿-- DB: SQLite
+PRAGMA foreign_keys = ON;  -- SQLite 전용
+
+-- 1. 이름이 김민준인 회원 조회 (WHERE)
 SELECT * FROM member WHERE '김민준';
 
 -- 2. 출판날짜가 최신인 책 조회 (ORDER BY, LIMIT)
@@ -76,3 +79,16 @@ WHERE member_id = 5 AND book_id = 9;
 
 -- 15. 대여 기록이 없는 회원(11번 오서율) 삭제 (DELETE)
 DELETE FROM member WHERE id = 11;
+
+-- [보너스] 2. 데이터 정합성 깨뜨려 보기 
+FK 에러 시도: DELETE FROM member WHERE id = 1;
+-- 결과: FOREIGN KEY constraint failed
+-- 왜 막히나: rental이 member 1번을 가리키는 3건이 있어서, 지우면 존재하지 않는 회원을 참조하게 됨
+-- 고치는 법: 자식(rental)을 먼저 삭제한 뒤 부모(member)를 삭제
+-- 참고: SQLite는 PRAGMA foreign_keys = ON; 을 켜야 FK 검사가 동작함 (파일 상단에 명시)
+
+-- 16. rental.member_id에 인덱스 생성 (INDEX)
+-- 적용 이유: 회원별 대여 조회(JOIN, GROUP BY)에서 member_id를 자주 검색해서, 조회 속도를 높이기 위함
+CREATE INDEX idx_rental_member_id ON rental(member_id);
+
+
