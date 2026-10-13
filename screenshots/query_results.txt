@@ -1,0 +1,227 @@
+# 쿼리 실행 결과 (schema.sql -> data.sql -> queries.sql 순서로 실행한 결과)
+
+
+﻿-- DB: SQLite
+PRAGMA foreign_keys = ON;  -- SQLite 전용
+
+-> 실행 완료
+
+[1] 이름이 김민준인 회원 조회 (WHERE)
+SELECT * FROM member WHERE name = '김민준';
+
+id	name	phone	email
+1	김민준	010-1234-5678	minjun.kim@example.com
+12	김민준	010-4321-0987	minha.song@example.com
+-> 2행
+
+[2] 출판날짜가 최신인 책 조회 (ORDER BY, LIMIT)
+SELECT * FROM book ORDER BY published_date DESC LIMIT 3;
+
+id	title	author	published_date	category_id
+11	새로운 지평선	박서연	2023-01-20	9
+7	색채의 연대기	소피아 로렌치	2021-07-07	7
+3	영혼의 노래	아리아나 킴	2020-11-05	3
+-> 3행
+
+[3] 분류가 문학(category_id = 9)이면서 2015년 이후 출판된 책 조회 (WHERE, AND)
+SELECT * FROM book WHERE category_id = 9 AND published_date >= '2015-01-01';
+
+id	title	author	published_date	category_id
+1	시간의 조각들	엘리아스 폰 브라운	2017-08-14	9
+11	새로운 지평선	박서연	2023-01-20	9
+-> 2행
+
+[4] 책 제목 중 '의'가 들어가는 책 조회 (LIKE)
+SELECT * FROM book WHERE title LIKE '%의%';
+
+id	title	author	published_date	category_id
+1	시간의 조각들	엘리아스 폰 브라운	2017-08-14	9
+2	존재의 나침반	루카스 셰퍼	2011-03-29	2
+3	영혼의 노래	아리아나 킴	2020-11-05	3
+4	도시의 맥박	카이 루이스	2015-01-10	4
+5	우주의 속삭임	마일로 켄싱턴	2018-06-22	5
+6	미래의 설계도	이솔비	2012-12-01	6
+7	색채의 연대기	소피아 로렌치	2021-07-07	7
+8	단어의 마법	클레오파트라 베일	2019-02-18	8
+10	과거의 그림자	데이빗 첸	2016-05-03	10
+12	생각의 정원	최지훈	2013-10-11	2
+-> 10행
+
+[5] 각 책의 제목과 카테고리 이름 조회 (INNER JOIN)
+SELECT book.title, category.category_name
+FROM book
+INNER JOIN category ON book.category_id = category.id;
+
+title	category_name
+시간의 조각들	문학
+존재의 나침반	철학
+영혼의 노래	종교
+도시의 맥박	사회과학
+우주의 속삭임	순수과학
+미래의 설계도	기술과학
+색채의 연대기	예술
+단어의 마법	언어
+이야기 강	문학
+과거의 그림자	역사
+새로운 지평선	문학
+생각의 정원	철학
+-> 12행
+
+[6] 모든 카테고리와 해당 책 제목 조회, 책이 없는 카테고리도 포함 (LEFT JOIN)
+SELECT book.title, category.category_name
+FROM category
+LEFT JOIN book ON book.category_id = category.id;
+
+title	category_name
+NULL	총류
+생각의 정원	철학
+존재의 나침반	철학
+영혼의 노래	종교
+도시의 맥박	사회과학
+우주의 속삭임	순수과학
+미래의 설계도	기술과학
+색채의 연대기	예술
+단어의 마법	언어
+새로운 지평선	문학
+시간의 조각들	문학
+이야기 강	문학
+과거의 그림자	역사
+-> 13행
+
+[7] 대여 기록별 회원 이름, 책 제목, 대여일 조회 (INNER JOIN 3개 테이블)
+SELECT member.name, book.title, rental.rental_date
+FROM rental
+INNER JOIN member   ON rental.member_id = member.id
+INNER JOIN book ON rental.book_id = book.id;
+
+name	title	rental_date
+김민준	시간의 조각들	2026-08-03
+김민준	영혼의 노래	2026-09-01
+이서연	존재의 나침반	2026-09-05
+박하준	시간의 조각들	2026-09-10
+최지우	우주의 속삭임	2026-09-15
+정예나	이야기 강	2026-09-20
+강도윤	이야기 강	2026-09-25
+윤서아	도시의 맥박	2026-09-28
+이서연	과거의 그림자	2026-10-01
+장예준	색채의 연대기	2026-10-03
+김민준	생각의 정원	2026-10-05
+임하윤	시간의 조각들	2026-10-08
+최지우	단어의 마법	2026-07-20
+박하준	미래의 설계도	2026-10-10
+-> 14행
+
+[8] 대여 기록이 한 번도 없는 회원 조회 (LEFT JOIN, IS NULL)
+SELECT member.name
+FROM member
+LEFT JOIN rental ON rental.member_id = member.id
+WHERE rental.id IS NULL;
+
+name
+한지호
+오서율
+김민준
+-> 3행
+
+[9] 카테고리별 도서 수 집계, 책이 없는 카테고리는 제외 (INNER JOIN, GROUP BY, COUNT)
+SELECT category.category_name, COUNT(*)
+FROM book
+INNER JOIN category ON book.category_id = category.id
+GROUP BY category.category_name;
+
+category_name	COUNT(*)
+기술과학	1
+문학	3
+사회과학	1
+순수과학	1
+언어	1
+역사	1
+예술	1
+종교	1
+철학	2
+-> 9행
+
+[10] 모든 카테고리별 도서 수 집계, 책이 없는 카테고리는 0권으로 표시 (LEFT JOIN, GROUP BY, COUNT)
+SELECT category.category_name, COUNT(book.id)
+FROM category
+LEFT JOIN book ON book.category_id = category.id
+GROUP BY category.category_name;
+
+category_name	COUNT(book.id)
+기술과학	1
+문학	3
+사회과학	1
+순수과학	1
+언어	1
+역사	1
+예술	1
+종교	1
+철학	2
+총류	0
+-> 10행
+
+[11] 회원별 대여 횟수 집계, 대여 기록이 없는 회원은 0회로 표시 (LEFT JOIN, GROUP BY, COUNT)
+SELECT member.id,member.name, COUNT(rental.id) 
+FROM member
+LEFT JOIN rental ON member.id = rental.member_id
+GROUP BY member.id;
+
+id	name	COUNT(rental.id)
+1	김민준	3
+2	이서연	2
+3	박하준	2
+4	최지우	2
+5	정예나	1
+6	강도윤	1
+7	윤서아	1
+8	장예준	1
+9	임하윤	1
+10	한지호	0
+11	오서율	0
+12	김민준	0
+-> 12행
+
+[12] 회원별 평균 대여 일수 조회, 반납하지 않은 건은 평균에서 제외 (GROUP BY, AVG)
+SELECT member_id, AVG(julianday(return_date) - julianday(rental_date)) AS avg_days
+FROM rental
+GROUP BY member_id;
+
+member_id	avg_days
+1	13.5
+2	14.0
+3	14.0
+4	13.5
+5	NULL
+6	10.0
+7	NULL
+8	6.0
+9	NULL
+-> 9행
+
+[13] 대여 기록이 한 번도 없는 회원 조회 (서브쿼리, NOT IN)
+SELECT member.name
+FROM member
+WHERE id NOT IN (SELECT member_id FROM rental);
+
+name
+한지호
+오서율
+김민준
+-> 3행
+
+[14] 정예나(5번)가 '이야기 강'(9번)을 반납한 것으로 반납일 갱신 (UPDATE)
+UPDATE rental
+SET return_date = '2026-10-13'
+WHERE member_id = 5 AND book_id = 9;
+
+-> 1행이 영향 받음
+
+[15] 대여 기록이 없는 회원(11번 오서율) 삭제 (DELETE)
+DELETE FROM member WHERE id = 11;
+
+-> 1행이 영향 받음
+
+[16] rental.member_id에 인덱스 생성 (INDEX)
+CREATE INDEX idx_rental_member_id ON rental(member_id);
+
+-> 실행 완료
