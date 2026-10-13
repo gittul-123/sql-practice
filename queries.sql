@@ -31,3 +31,15 @@ SELECT member.name
 FROM member
 LEFT JOIN rental ON rental.member_id = member.id
 WHERE rental.id IS NULL;
+
+-- 9. 카테고리별 도서 수 집계, 책이 없는 카테고리는 제외 (INNER JOIN, GROUP BY, COUNT)
+SELECT category.category_name, COUNT(*)
+FROM book
+INNER JOIN category ON book.category_id = category.id
+GROUP BY category.category_name;
+
+-- 10. 모든 카테고리별 도서 수 집계, 책이 없는 카테고리는 0권으로 표시 (LEFT JOIN, GROUP BY, COUNT)
+SELECT category.category_name, COUNT(book.id)
+FROM category
+LEFT JOIN book ON book.category_id = category.id
+GROUP BY category.category_name;
