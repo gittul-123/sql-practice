@@ -73,3 +73,6 @@ WHERE id NOT IN (SELECT member_id FROM rental);
 UPDATE rental
 SET return_date = '2026-10-13'
 WHERE member_id = 5 AND book_id = 9;
+
+-- 15. 대여 기록이 없는 회원(11번 오서율) 삭제 (DELETE)
+DELETE FROM member WHERE id = 11;
