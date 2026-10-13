@@ -2,7 +2,7 @@
 PRAGMA foreign_keys = ON;  -- SQLite 전용
 
 -- 1. 이름이 김민준인 회원 조회 (WHERE)
-SELECT * FROM member WHERE '김민준';
+SELECT * FROM member WHERE name = '김민준';
 
 -- 2. 출판날짜가 최신인 책 조회 (ORDER BY, LIMIT)
 SELECT * FROM book ORDER BY published_date DESC LIMIT 3;
@@ -65,12 +65,11 @@ SELECT member.name
 FROM member
 WHERE id NOT IN (SELECT member_id FROM rental);
 
---- 8번 방식(LEFT JOIN+IS NULL)과 13번 방식(서브쿼리+NOT IN)의 비교
-                8번 (LEFT JOIN + IS NULL)	13번 (서브쿼리 + NOT IN)
-읽는 느낌	     이어 붙인 다음 NULL을 골라냄	 "빌린 적 있는 번호 목록에 없는 회원"
-이해 쉬움	     처음엔 어려움	                말로 읽으면 직관적
-데이터가 많을 때  보통 빠름                     DB에 따라 느릴 수 있음
-비고                                         NOT IN은 NULL이 하나라도 포함되면 결과가 비어버림(주의 필요)
+-- [보너스 1] 8번(LEFT JOIN + IS NULL)과 13번(서브쿼리 + NOT IN)의 비교 (같은 결과 3명)
+--  - 읽는 느낌: 8번은 이어 붙인 다음 NULL을 골라냄 / 13번은 "빌린 적 있는 번호 목록에 없는 회원"
+--  - 이해 쉬움: 8번은 처음엔 어려움 / 13번은 말로 읽으면 직관적
+--  - 데이터가 많을 때: 8번은 보통 빠름 / 13번은 DB에 따라 느릴 수 있음
+--  - 주의: NOT IN은 목록에 NULL이 하나라도 있으면 결과가 비어버림
 
 -- 14. 정예나(5번)가 '이야기 강'(9번)을 반납한 것으로 반납일 갱신 (UPDATE)
 UPDATE rental
@@ -80,8 +79,8 @@ WHERE member_id = 5 AND book_id = 9;
 -- 15. 대여 기록이 없는 회원(11번 오서율) 삭제 (DELETE)
 DELETE FROM member WHERE id = 11;
 
--- [보너스] 2. 데이터 정합성 깨뜨려 보기 
-FK 에러 시도: DELETE FROM member WHERE id = 1;
+-- [보너스 2] 데이터 정합성 깨뜨려 보기
+-- FK 에러 시도: DELETE FROM member WHERE id = 1;
 -- 결과: FOREIGN KEY constraint failed
 -- 왜 막히나: rental이 member 1번을 가리키는 3건이 있어서, 지우면 존재하지 않는 회원을 참조하게 됨
 -- 고치는 법: 자식(rental)을 먼저 삭제한 뒤 부모(member)를 삭제
